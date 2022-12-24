@@ -120,3 +120,8 @@ void Renderer::draw_bitmap(RenderContext* context, Surface* bitmap, Rect srcRect
 {
     blit(bitmap, context->buffer, srcRect, dstRect);
 }
+
+void Renderer::draw_text(RenderContext* context, const char* text, Rect dest)
+{
+    render_text(context->buffer, context->font, text, dest);
+}

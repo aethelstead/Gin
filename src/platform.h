@@ -14,6 +14,15 @@ namespace Platform
     typedef unsigned int    uint;
     typedef unsigned int    uint32;
 
+    struct TTFont
+    {
+        void* internal;
+
+        TTFont():
+            internal{ nullptr }
+        {}
+    };
+
     struct Surface
     {
         static Surface* create_empty(Point dims);
@@ -50,6 +59,11 @@ namespace Platform
         ~Window();
 
         void swap_buffers();
+    };
+
+    struct Renderer
+    {
+        void* internal;
     };
 
     enum class KeyCode
@@ -113,6 +127,12 @@ namespace Platform
 
     // Gets the next event from the event queue. Returns > 0 if found and updates the Event e with the event data. Returns 0 if no events on queue.
     int next_event(Event* e);
+
+    TTFont* open_font(const char* filePath, int ptSize);
+
+    void close_font(TTFont* font);
+
+    void render_text(Surface* surface, TTFont* font, const char* text, Rect dest);
 }
 }
 

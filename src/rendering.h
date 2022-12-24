@@ -25,6 +25,8 @@ using namespace Geometry;
     struct RenderContext
     {
         Surface* buffer;
+        TTFont* font;
+
         uint clearColor;
         uint drawColor;
         uint fillColor;
@@ -32,9 +34,15 @@ using namespace Geometry;
         RenderContext(Point dimensions):
             clearColor{ (uint)Color::Black },
             drawColor{ (uint)Color::White },
-            fillColor{ (uint)Color::Magenta }
+            fillColor{ (uint)Color::Magenta },
+            font{ nullptr }
         {
             buffer = Surface::create_empty(dimensions);
+        }
+
+        ~RenderContext()
+        {
+            close_font(font);
         }
     };
 
@@ -50,6 +58,8 @@ using namespace Geometry;
 
         static void draw_bitmap(RenderContext* context, Surface* bitmap);
         static void draw_bitmap(RenderContext* context, Surface* bitmap, Rect srcRect, Rect dstRect);
+
+        static void draw_text(RenderContext* context, const char* text, Rect dest);
     };
 }
 

@@ -8,6 +8,8 @@
 #include "rendering.h"
 #include "game.h"
 
+const int TARGET_FPS = 60;
+
 namespace Gin
 {
     struct Gin
@@ -18,27 +20,29 @@ namespace Gin
 
         bool running;
 
-        std::map<Platform::KeyCode, bool> keydownMap;
-        std::map<Platform::KeyCode, bool> prevKeydownMap;
-
         Platform::Window* window;
         Logger* logger;
         RenderContext* renderContext;
         Game* game;
+
+        uint fps;
+        uint frames;
 
         Gin() :
             running{ false },
             window{ nullptr },
             logger{ nullptr },
             renderContext{ nullptr },
-            game{ nullptr }
+            game{ nullptr },
+            fps{ 0 },
+            frames{ 0 }
         {}
 
         bool init();
         void quit();
         void run();
 
-        void handle_keyboard(GameCommand& command);
+        void handle_keyboard();
 
         void update();
         void render(); 

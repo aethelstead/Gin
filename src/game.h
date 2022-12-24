@@ -5,18 +5,6 @@
 
 namespace Gin
 {
-    enum class GameCommand
-    {
-        NONE = 0,
-        PLAYER_MOVE_NORTH,
-        PLAYER_MOVE_EAST,
-        PLAYER_MOVE_SOUTH,
-        PLAYER_MOVE_WEST,
-        PLAYER_MOVE_STOP,
-        PLAYER_ATTACK,
-        PLAYER_ATTACK_STOP
-    };
-
     struct Game
     {
         Entity* player;
@@ -30,10 +18,9 @@ namespace Gin
 
         void init();
 
-        void update(const GameCommand& command);
+        void handle_keyboard();
 
-        void handle_command(const GameCommand& command);
-
+        void update();
     };
 }
 

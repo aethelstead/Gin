@@ -1,5 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "platform.h"
 
@@ -39,11 +41,19 @@ namespace Platform
 
     bool init()
     {
-        return (SDL_Init( SDL_INIT_EVERYTHING ) == 0) ? true : false; 
+        // @TODO: Check for errors in each subsys init and log from here.
+        bool sdlOk = (SDL_Init( SDL_INIT_EVERYTHING ) == 0) ? true : false;
+        bool ttfOk = (TTF_Init() == 0) ? true : false;
+        bool imgOk = (IMG_Init( IMG_INIT_PNG | IMG_INIT_WEBP ) != 0) ? true : false;
+        bool mixOk = (Mix_Init( MIX_INIT_MP3 ) != 0) ? true : false;
+        return (sdlOk && ttfOk && imgOk && mixOk);
     }
 
     void quit()
     {
+        Mix_Quit();
+        IMG_Quit();
+        TTF_Quit();
         SDL_Quit();
     }
 
@@ -127,7 +137,36 @@ namespace Platform
             e->keyboard.code = (KeyCode)internalEvent.key.keysym.sym;
         }
 
+
         return pollResult;
+    }
+
+    TTFont* open_font(const char* filePath, int ptSize)
+    {
+        TTF_Font* internalFont = TTF_OpenFont(filePath, ptSize);
+
+        TTFont* font = new TTFont();
+        font->internal = internalFont;
+
+        return font;
+    }
+
+    void close_font(TTFont* font)
+    {
+        TTF_Font* internalFont = (TTF_Font*)font->internal;
+        TTF_CloseFont(internalFont);
+
+        delete font;
+    }
+
+    void render_text(Surface* surface, TTFont* font, const char* text, Rect dest)
+    {
+        // @TODO: Support colours besides white
+        SDL_Color white = { 0xff, 0xff, 0xff };
+        SDL_Surface* textSurface = TTF_RenderText_Solid((TTF_Font*)font->internal, text, white);
+        SDL_Rect dr = { (int)dest.x, (int)dest.y, (int)dest.w, (int)dest.h };
+        SDL_BlitSurface(textSurface, NULL, (SDL_Surface*)surface->internal, &dr);
+        SDL_FreeSurface(textSurface);
     }
 
 }
