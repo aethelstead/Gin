@@ -1,8 +1,9 @@
-#include "Application.h"
+#include "gin.h"
 
+// @TODO: Move main to Platform?
 int main(int argc, char* argv[])
 {
-    if (!Application::start())
+    if (!Gin::Gin::start())
     {
         return 1;
     }
