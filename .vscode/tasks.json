@@ -7,16 +7,20 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "*.cpp",
+                "-I/home/jim/vcpkg/installed/x64-linux/include",
+                "-L/home/jim/vcpkg/installed/x64-linux/lib",
+                "$(find . -type f -iregex '.*\\.cpp')",
                 "-lSDL2",
                 "-lSDL2_image",
                 "-lSDL2_mixer",
-                "-lSDL2_ttf",
+                "-ltmxparser",
+                "-lz",
+                "-ltinyxml2",
                 "-o",
-                "../bin/gin"
+                "/home/jim/Programming/C++/Experiments/Gin/bin/tilegame"
             ],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$gcc"
