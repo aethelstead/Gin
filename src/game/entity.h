@@ -18,11 +18,7 @@ struct Entity
     std::string archetype;
 
     Entity():
-        moving{ false },
-        pos{ Point(0, 0) },
-        dims{ Point(0, 0) },
-        direction{ Point(0, 0) },
-        archetype{ std::string() }
+        moving{ false }
     {}
 
     Rect rect()

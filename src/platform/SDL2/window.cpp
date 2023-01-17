@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+
 #include "../window.h"
 
 using namespace Gin;

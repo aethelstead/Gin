@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-#include "../platform.h"
+#include "../platform/platform.h"
 #include "world.h"
 #include "camera.h"
 #include "sprite.h"
@@ -22,15 +22,10 @@ struct View
 
     View():
         context( nullptr ),
-        world( nullptr ),
-        sprites{ std::vector<Sprite*>() },
-        textures{ std::map<std::string, Gin::Platform::Texture*>() }
+        world( nullptr )
     {}
 
     void update();
-
-    void render();
-    void render_tilemap();
 
 };
 

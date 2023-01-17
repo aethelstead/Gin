@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 #include "file.h"
 
 bool Gin::Platform::read_file(const char* filePath, std::string& outFileText)

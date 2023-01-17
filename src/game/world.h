@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../platform/render.h"
+#include "../platform/platform.h"
 #include "tilemap.h"
 #include "camera.h"
 #include "player.h"
@@ -19,12 +19,7 @@ struct WorldMap
     std::vector<Tileset> tilesets;
     std::vector<Entity> entities; 
 
-    WorldMap():
-        mapDims{ Point(0, 0) },
-        tileDims( Point(0, 0) ),
-        layers{ std::vector<TilemapLayer>() },
-        tilesets{ std::vector<Tileset>() },
-        entities{ std::vector<Entity>() }
+    WorldMap()
     {}
 };
 
@@ -32,13 +27,12 @@ struct World
 {
     static World* create(WorldMap* worldmap, Point viewDims);
 
-    Tilemap* tilemap;
+    Tilemap tilemap;
     Camera* camera;
     Player* player;
     std::vector<NPC*> npcs;
 
     World():
-        tilemap( nullptr ),
         camera( nullptr ),
         player( nullptr )
     {}

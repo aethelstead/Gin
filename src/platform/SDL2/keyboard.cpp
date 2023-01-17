@@ -1,11 +1,12 @@
 #include <SDL2/SDL.h>
+
 #include "../keyboard.h"
 
 using namespace Gin;
 using namespace Platform;
 
-std::map<KeyCode, bool> Keyboard::keydownMap = std::map<KeyCode, bool>();
-std::map<KeyCode, bool> Keyboard::prevKeydownMap = std::map<KeyCode, bool>();
+std::map<KeyCode, bool> Keyboard::keydownMap;
+std::map<KeyCode, bool> Keyboard::prevKeydownMap;
 
 bool Keyboard::key_pressed(KeyCode keyCode)
 {

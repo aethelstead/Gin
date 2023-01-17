@@ -38,6 +38,41 @@ WorldMap* WorldMap::open(const char* path)
         tileset.firstTileId = tsx->GetFirstGid();
         tileset.tileDims = Point(tsx->GetTileWidth(), tsx->GetTileHeight());
 
+        for (const auto& tile : tsx->GetTiles())
+        {
+            if (tile->IsAnimated())
+            {
+                std::vector<TileAnimFrame> frames;
+                for (const auto tmxFrame : tile->GetFrames())
+                {
+                    TileAnimFrame frame;
+                    frame.tileId = tmxFrame.GetTileID();
+                    frame.duration = tmxFrame.GetDuration();
+
+                    frames.push_back(frame);
+                }
+                tileset.animationsMap[ tile->GetId() ] = frames;
+            }
+
+            // Tile is collideable if it has objects
+            std::vector<Rect> collideables;
+            if (tile->HasObjects())
+            {
+                for (const auto& obj : tile->GetObjects())
+                {
+                    Rect r;
+                    r.x = obj->GetX();
+                    r.y = obj->GetY();
+                    r.w = obj->GetWidth();
+                    r.h = obj->GetHeight();
+
+                    collideables.push_back(r);
+                }
+            }
+
+            tileset.collideablesMap[ tile->GetId() ] = collideables;
+        }
+
         Assets::bitmaps[tileset.name] = Bitmap::open(tsx->GetImage()->GetSource().c_str());
 
         worldmap->tilesets.push_back(tileset);
@@ -83,7 +118,7 @@ World* World::create(WorldMap* worldmap, Point viewDims)
 {
     World* world = new World();
 
-    world->tilemap = new Tilemap(worldmap->mapDims, worldmap->tileDims, worldmap->tilesets, worldmap->layers);
+    world->tilemap = Tilemap(worldmap->mapDims, worldmap->tileDims, worldmap->tilesets, worldmap->layers);
     world->camera = new Camera(Point(0, 0), viewDims);
     world->npcs = std::vector<NPC*>();
 
@@ -125,8 +160,8 @@ std::vector<Entity*> World::entities()
 void World::update()
 {
     Point mapDimensions;
-    mapDimensions.x = tilemap->mapDims.x * tilemap->tileDims.x;
-    mapDimensions.y = tilemap->mapDims.y * tilemap->tileDims.y;
+    mapDimensions.x = tilemap.mapDims.x * tilemap.tileDims.x;
+    mapDimensions.y = tilemap.mapDims.y * tilemap.tileDims.y;
 
     // Check for player out of bounds
     Point collideDirection = DIRECTION_NONE;
@@ -139,19 +174,36 @@ void World::update()
     else if (player->pos.y + player->dims.y > mapDimensions.y)
         collideDirection = DIRECTION_SOUTH;
 
-    // Check for player-NPC collision
-    for (const auto npc : npcs)
+    // Get the ID of the tile the player is standing on.
+    Point playerTile;
+    playerTile.x = player->pos.x / tilemap.tileDims.x;
+    playerTile.y = player->pos.y / tilemap.tileDims.y;
+    int playerTileIdx = (playerTile.y * tilemap.mapDims.x) + playerTile.x;
+
+    // Get the tiles to the N-E-S-W of the player
+    int north = playerTileIdx - tilemap.mapDims.x;
+    int east = playerTileIdx + 1;
+    int south = playerTileIdx + tilemap.mapDims.x;
+    int west = playerTileIdx - 1;
+
+    std::vector<Rect> collideables = tilemap.collideables(Rect(camera->pos, camera->dimensions));
+
+    // Add every NPC to the list of collideables
+    for (const auto& npc : npcs)
+    {
+        collideables.push_back(npc->rect());
+    }
+
+    for (const auto& coll : collideables)
     {
         Rect a = player->rect();
-        Rect b = npc->rect();
-        bool collision = (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top);
+        Rect b = coll;
+        bool collision = (a.left() < b.right() && a.right() > b.left() && a.top() < b.bottom() && a.bottom() > b.top());
         if (collision)
         {
-            // @TODO: Fugly
-            // Determine the direction of the collision.
             Point c;
-            c.x = a.left - b.left;
-            c.y = a.top - b.top;
+            c.x = a.left() - b.left();
+            c.y = a.top() - b.top();
 
             if (std::abs(c.x) > std::abs(c.y))
             {

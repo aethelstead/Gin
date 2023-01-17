@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+
 #include "../gamepad.h"
 
 using namespace Gin;

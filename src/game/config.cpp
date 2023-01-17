@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "../logger.h"
-#include "../platform.h"
+#include "../platform/platform.h"
 #include "config.h"
 
 std::vector<std::string> split_string_by_newline(const std::string& str);

@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-#include "platform.h"
+#include "platform/platform.h"
 
 struct Assets
 {

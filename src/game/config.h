@@ -9,8 +9,7 @@ struct Config
 
     Point windowDimensions;
 
-    Config():
-        windowDimensions{ Point(0, 0) }
+    Config()
     {}
 
 };

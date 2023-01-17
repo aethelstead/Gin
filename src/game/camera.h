@@ -10,9 +10,7 @@ struct Camera
     Point pos;
     Point dimensions;
 
-    Camera():
-        pos{ Point(0, 0) },
-        dimensions{ Point(0, 0) }
+    Camera()
     {}
 
     Camera(Point _pos, Point _dimensions):

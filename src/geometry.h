@@ -63,77 +63,73 @@ struct Rect
     int y;
     int w;
     int h;
-    int left;
-    int top;
-    int right;
-    int bottom;
 
     Rect():
         x{ 0 },
         y{ 0 },
         w{ 0 },
         h{ 0 }
-    {
-        left = x;
-        top = y;
-        right = x + w;
-        bottom = y + h;
-    }
+    {}
 
     Rect(int _x, int _y, int _w, int _h):
         x{ _x },
         y{ _y },
         w{ _w },
         h{ _h }
-    {
-        left = x;
-        top = y;
-        right = x + w;
-        bottom = y + h;
-    }
+    {}
 
     Rect(Point pos, Point dims):
         x{ pos.x },
         y{ pos.y },
         w{ dims.x },
         h{ dims.y }
-    {
-        left = x;
-        top = y;
-        right = x + w;
-        bottom = y + h;
-    }
+    {}
 
     Rect(const Rect& r):
         x{ r.x },
         y{ r.y },
         w{ r.w },
         h{ r.h }
+    {}
+
+    int top()
     {
-        left = x;
-        top = y;
-        right = x + w;
-        bottom = y + h;
+        return y;
+    }
+
+    int left()
+    {
+        return x;
+    }
+
+    int bottom()
+    {
+        return y + h;
+    }
+
+    int right()
+    {
+        return x + w;
     }
 
     Point top_left()
     {
-        return Point(left, top);
+        return Point(left(), top());
     }
 
     Point top_right()
     {
-        return Point(right, top);
+        return Point(right(), top());
     }
 
     Point bottom_left()
     {
-        return Point(left, bottom);
+        return Point(left(), bottom());
     }
 
     Point bottom_right()
     {
-        return Point(right, bottom);
+        return Point(right(), bottom());
     }
 };
 

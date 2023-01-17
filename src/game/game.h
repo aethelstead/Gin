@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../platform.h"
+#include "../platform/platform.h"
 #include "tilemap.h"
 #include "config.h"
 #include "world.h"
@@ -36,7 +36,10 @@ struct Game
 
     void handle_keyboard();
 
-    bool update();
+    bool update(int frameCount);
+
+    void render();
+    void render_tilemap();
 };
 
 #endif
