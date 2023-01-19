@@ -152,25 +152,19 @@ bool Game::update(int frameCount)
 
     handle_keyboard();
 
-    Tilemap viewTilemap; // A copy of the tilemap that's clipped to the camera.
-    world->tilemap->clip(viewTilemap, world->camera->viewport());
-
     world->update();
     view->update(frameCount);
 
-renderer->clear();
-    render_tilemap(viewTilemap);
-    renderer->flip();
-    //render();
+    render();
 
     return requestQuit;
 }
 
 void Game::render()
 {
-    //renderer->clear();
+    renderer->clear();
 
-    //render_tilemap();
+    render_tilemap();
 
    for (const auto sprite : view->sprites)
    {
@@ -180,75 +174,32 @@ void Game::render()
     renderer->flip();
 }
 
-void Game::render_tilemap(Tilemap& tilemap)
+void Game::render_tilemap()
 {
-
-    // The tilemap should have already been clipped, so just render the whole thing.
-
-    Tileset firstTileset = tilemap.tilesets[0];
-    Rect src(Point(0, 0), firstTileset.tileDims);
-    Rect dst(Point(0, 0), tilemap.tileDims);
-
-    for (const auto& layer : tilemap.layers)
-    {
-        for (int y = 0; y < tilemap.mapDims.y; y++)
-        {
-            for (int x = 0; x < tilemap.mapDims.x; x++)
-            {
-                int tileIdx = (y * tilemap.mapDims.x) + x;
-                int tileVal = 1; //layer.tiles[tileIdx];
-
-                if (tileVal < 0)
-                    continue;
-
-                // Find the tileset to use
-                Tileset tileset = firstTileset;
-                for (const auto& ts : tilemap.tilesets)
-                {
-                    if (tileVal < ts.firstTileId)
-                        break;
-
-                    tileset = ts;
-                }
-                
-                
-
-                src.x = ((tileVal - tileset.firstTileId) % tileset.dims.x) * tileset.tileDims.x;
-                src.y = ((tileVal - tileset.firstTileId) / tileset.dims.y) * tileset.tileDims.y;
-
-                dst.x = (x * tilemap.tileDims.x) - world->camera->pos.x;
-                dst.y = (y * tilemap.tileDims.y) - world->camera->pos.y;
-
-                renderer->copy(view->textures[tileset.name], src, dst);
-            }
-        }
-    }
-
-    /*
     Point inView;
-    inView.x = world->camera->dims.x / tilemap.tileDims.x;
-    inView.y = world->camera->dims.y / tilemap.tileDims.y;
+    inView.x = world->camera->dims.x / world->tilemap->tileDims.x;
+    inView.y = world->camera->dims.y / world->tilemap->tileDims.y;
 
     Point start;
-    start.x = world->camera->pos.x / tilemap.tileDims.x;
-    start.y = world->camera->pos.y / tilemap.tileDims.y;
+    start.x = world->camera->pos.x / world->tilemap->tileDims.x;
+    start.y = world->camera->pos.y / world->tilemap->tileDims.y;
 
     // Over-render by one tile if the map scrolls.
     Point end;
-    end.x = (tilemap.mapDims.x > inView.x) ? start.x + inView.x + 1 : tilemap.mapDims.x;
-    end.y = (tilemap.mapDims.y > inView.y) ? start.y + inView.y + 2 : tilemap.mapDims.y;
+    end.x = (world->tilemap->mapDims.x > inView.x) ? start.x + inView.x + 1 : world->tilemap->mapDims.x;
+    end.y = (world->tilemap->mapDims.y > inView.y) ? start.y + inView.y + 2 : world->tilemap->mapDims.y;
 
-    Tileset firstTileset = tilemap.tilesets[0];
+    Tileset firstTileset = world->tilemap->tilesets[0];
     Rect src(Point(0, 0), firstTileset.tileDims);
-    Rect dst(Point(0, 0), tilemap.tileDims);
+    Rect dst(Point(0, 0), world->tilemap->tileDims);
 
-    for (const auto& layer : tilemap.layers)
+    for (const auto& layer : world->tilemap->layers)
     {
         for (int y = start.y; y < end.y; y++)
         {
             for (int x = start.x; x < end.x; x++)
             {
-                int tileIdx = (y * tilemap.mapDims.x) + x;
+                int tileIdx = (y * world->tilemap->mapDims.x) + x;
                 int tileVal = layer.tiles[tileIdx];
 
                 if (tileVal < 0)
@@ -256,7 +207,7 @@ void Game::render_tilemap(Tilemap& tilemap)
 
                 // Find the tileset to use
                 Tileset tileset = firstTileset;
-                for (const auto& ts : tilemap.tilesets)
+                for (const auto& ts : world->tilemap->tilesets)
                 {
                     if (tileVal < ts.firstTileId)
                         break;
@@ -269,11 +220,11 @@ void Game::render_tilemap(Tilemap& tilemap)
                 src.x = ((tileVal - tileset.firstTileId) % tileset.dims.x) * tileset.tileDims.x;
                 src.y = ((tileVal - tileset.firstTileId) / tileset.dims.y) * tileset.tileDims.y;
 
-                dst.x = (x * tilemap.tileDims.x) - world->camera->pos.x;
-                dst.y = (y * tilemap.tileDims.y) - world->camera->pos.y;
+                dst.x = (x * world->tilemap->tileDims.x) - world->camera->pos.x;
+                dst.y = (y * world->tilemap->tileDims.y) - world->camera->pos.y;
 
                 renderer->copy(view->textures[tileset.name], src, dst);
             }
         }
-    }*/
+    }
 }

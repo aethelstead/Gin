@@ -44,8 +44,3 @@ void Tilemap::clip(Tilemap& outTilemap, Rect bounds)
         outTilemap.layers.push_back(clipLayer);
     }
 }
-
-std::vector<Rect> Tilemap::solid_tiles()
-{
-    return std::vector<Rect>();
-}

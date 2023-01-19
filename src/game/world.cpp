@@ -177,6 +177,8 @@ void World::update()
     std::vector<Rect> collideables;
 
     // Add every solid tile in the map to the list of collideables
+    Tilemap viewTilemap; // A copy of the tilemap that's clipped to the camera.
+    tilemap->clip(viewTilemap, camera->viewport());
 
     // Add every NPC to the list of collideables
     for (const auto& npc : npcs)

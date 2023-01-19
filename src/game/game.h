@@ -38,7 +38,7 @@ struct Game
     bool update(int frameCount);
 
     void render();
-    void render_tilemap(Tilemap& tilemap);
+    void render_tilemap();
 };
 
 #endif

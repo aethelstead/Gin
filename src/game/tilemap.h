@@ -69,9 +69,6 @@ struct Tilemap
 
     // Returns a copy of the tilemap that is clipped to the bounds.
     void clip(Tilemap& outTilemap, Rect bounds);
-
-    // Returns a list of all the solid/ collideable tiles in the tilemap.
-    std::vector<Rect> solid_tiles();
 };
 
 #endif
