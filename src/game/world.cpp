@@ -118,7 +118,7 @@ World* World::create(WorldMap* worldmap, Point viewDims)
 {
     World* world = new World();
 
-    world->tilemap = Tilemap(worldmap->mapDims, worldmap->tileDims, worldmap->tilesets, worldmap->layers);
+    world->tilemap = new Tilemap(worldmap->mapDims, worldmap->tileDims, worldmap->tilesets, worldmap->layers);
     world->camera = new Camera(Point(0, 0), viewDims);
     world->npcs = std::vector<NPC*>();
 
@@ -160,8 +160,8 @@ std::vector<Entity*> World::entities()
 void World::update()
 {
     Point mapDimensions;
-    mapDimensions.x = tilemap.mapDims.x * tilemap.tileDims.x;
-    mapDimensions.y = tilemap.mapDims.y * tilemap.tileDims.y;
+    mapDimensions.x = tilemap->mapDims.x * tilemap->tileDims.x;
+    mapDimensions.y = tilemap->mapDims.y * tilemap->tileDims.y;
 
     // Check for player out of bounds
     Point collideDirection = DIRECTION_NONE;
@@ -174,19 +174,9 @@ void World::update()
     else if (player->pos.y + player->dims.y > mapDimensions.y)
         collideDirection = DIRECTION_SOUTH;
 
-    // Get the ID of the tile the player is standing on.
-    Point playerTile;
-    playerTile.x = player->pos.x / tilemap.tileDims.x;
-    playerTile.y = player->pos.y / tilemap.tileDims.y;
-    int playerTileIdx = (playerTile.y * tilemap.mapDims.x) + playerTile.x;
+    std::vector<Rect> collideables;
 
-    // Get the tiles to the N-E-S-W of the player
-    int north = playerTileIdx - tilemap.mapDims.x;
-    int east = playerTileIdx + 1;
-    int south = playerTileIdx + tilemap.mapDims.x;
-    int west = playerTileIdx - 1;
-
-    std::vector<Rect> collideables = tilemap.collideables(Rect(camera->pos, camera->dimensions));
+    // Add every solid tile in the map to the list of collideables
 
     // Add every NPC to the list of collideables
     for (const auto& npc : npcs)
@@ -239,8 +229,8 @@ void World::update()
 
     // Update camera world pos
     Point halfView;
-    halfView.x = (camera->dimensions.x / 2);
-    halfView.y = (camera->dimensions.y / 2);
+    halfView.x = (camera->dims.x / 2);
+    halfView.y = (camera->dims.y / 2);
     if (player->pos.x > halfView.x && player->pos.x < mapDimensions.x - halfView.x)
     {
         camera->pos.x = player->pos.x - halfView.x;

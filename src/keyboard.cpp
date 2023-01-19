@@ -1,9 +1,6 @@
 #include <SDL2/SDL.h>
 
-#include "../keyboard.h"
-
-using namespace Gin;
-using namespace Platform;
+#include "keyboard.h"
 
 std::map<KeyCode, bool> Keyboard::keydownMap;
 std::map<KeyCode, bool> Keyboard::prevKeydownMap;

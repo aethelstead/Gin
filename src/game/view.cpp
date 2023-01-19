@@ -6,18 +6,17 @@
 using namespace Gin;
 using namespace Platform;
 
-View* View::create(World* world, RenderContext* context)
+View* View::create(World* world, Renderer* renderer)
 {
     View* view = new View();
 
-    view->context = context;
     view->world = world;
 
     // Load texture for each tileset
-    for (const auto tileset : world->tilemap.tilesets)
+    for (const auto tileset : world->tilemap->tilesets)
     {
         Bitmap* bitmap = Assets::bitmaps[tileset.name];
-        view->textures[tileset.name] = Texture::open(context, bitmap);
+        view->textures[tileset.name] = Texture::open(bitmap);
     }
 
     for (const auto entity : world->entities())
@@ -46,7 +45,7 @@ View* View::create(World* world, RenderContext* context)
     return view;
 }
 
-void View::update()
+void View::update(int frameCount)
 {
     // @TODO: Doesn't cache sprites that have been added to the world since init.
     for (const auto sprite : sprites)
@@ -55,6 +54,7 @@ void View::update()
         {
             if (entity->id == sprite->entityId)
             {
+                // Update the sprite's view position
                 Point viewPos = entity->pos - world->camera->pos;
                 sprite->view.x = viewPos.x;
                 sprite->view.y = viewPos.y;

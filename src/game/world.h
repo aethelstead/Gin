@@ -27,7 +27,7 @@ struct World
 {
     static World* create(WorldMap* worldmap, Point viewDims);
 
-    Tilemap tilemap;
+    Tilemap* tilemap;
     Camera* camera;
     Player* player;
     std::vector<NPC*> npcs;

@@ -8,15 +8,20 @@ using namespace Gin;
 struct Camera
 {
     Point pos;
-    Point dimensions;
+    Point dims;
 
     Camera()
     {}
 
     Camera(Point _pos, Point _dimensions):
         pos{ _pos },
-        dimensions{ _dimensions }
+        dims{ _dimensions }
     {}
+
+    Rect viewport()
+    {
+        return Rect(pos, dims);
+    }
 };
 
 #endif

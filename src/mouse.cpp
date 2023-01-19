@@ -1,9 +1,4 @@
-#include <SDL2/SDL.h>
-
-#include "../mouse.h"
-
-using namespace Gin;
-using namespace Platform;
+#include "mouse.h"
 
 Point Mouse::pos = Point(0, 0);
 Point Mouse::prevPos = Point(0, 0);

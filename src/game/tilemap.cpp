@@ -1,9 +1,9 @@
 #include "tilemap.h"
 
-std::vector<Rect> Tilemap::collideables(Rect bounds)
+void Tilemap::clip(Tilemap& outTilemap, Rect bounds)
 {
     // @TODO: Check bounds isnt too big
-    // @TODO: Make it possible to omit bounds parameter and return whole tilemap
+    // @TODO: Make it possible to omit bounds parameter and return whole tilemap?
 
     Point inView;
     inView.x = bounds.w / tileDims.x;
@@ -17,48 +17,35 @@ std::vector<Rect> Tilemap::collideables(Rect bounds)
     end.x = (mapDims.x > inView.x) ? start.x + inView.x : mapDims.x;
     end.y = (mapDims.y > inView.y) ? start.y + inView.y : mapDims.y;
 
-    // List of all types of tile that its possible to collide with
-    std::vector<int> collTileIds;
-    for (const auto& tileset : tilesets)
-    {
-        for (const auto& kvp : tileset.collideablesMap)
-        {
-            int tileId = kvp.first;
-            auto tileColls = kvp.second;
-            for (const auto& tileColl : tileColls)
-            {
-                collTileIds.push_back(tileId);
-            }
-        }
-    }
+    outTilemap.mapDims.x = end.x - start.x;
+    outTilemap.mapDims.y = end.y - start.y;
+    outTilemap.tileDims = tileDims;
+    outTilemap.tilesets = tilesets;
 
-    std::vector<Rect> colls;
+    int nTiles = mapDims.x * mapDims.y;
 
+    int clipTileIdx = 0;
     for (const auto& layer : layers)
     {
+        TilemapLayer clipLayer;
+        clipLayer.tiles = (int*)calloc(nTiles, sizeof(int));
+
         for (int y = start.y; y < end.y; y++)
         {
             for (int x = start.x; x < end.x; x++)
             {
                 int tileIdx = (y * mapDims.x) + x;
-                int tileVal = layer.tiles[tileIdx] - 1;
+                int tileVal = layer.tiles[tileIdx];     // @TODO: Need to -1 here?
 
-                for (const auto& collTileId : collTileIds)
-                {
-                    if (tileVal == collTileId)
-                    {
-                        Rect r;
-                        r.x = (x * tileDims.x);
-                        r.y = (y * tileDims.y);
-                        r.w = tileDims.x;
-                        r.h = tileDims.y;
-
-                        colls.push_back(r);
-                    }
-                }
+                clipLayer.tiles[++clipTileIdx] = tileVal;
             }
         }
-    }
 
-    return colls;
+        outTilemap.layers.push_back(clipLayer);
+    }
+}
+
+std::vector<Rect> Tilemap::solid_tiles()
+{
+    return std::vector<Rect>();
 }

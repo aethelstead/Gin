@@ -5,6 +5,7 @@ clang++ \
 \
 src/assets.cpp \
 src/logger.cpp \
+src/keyboard.cpp \
 src/game/world.cpp \
 src/game/view.cpp \
 src/game/sprite.cpp \
@@ -13,13 +14,12 @@ src/game/game.cpp \
 src/game/tilemap.cpp \
 src/platform/file.cpp \
 src/platform/SDL2/main.cpp \
-src/platform/SDL2/platform.cpp \
+src/platform/SDL2/clock.cpp \
 src/platform/SDL2/window.cpp \
-src/platform/SDL2/render.cpp \
-src/platform/SDL2/gamepad.cpp \
 src/platform/SDL2/bitmap.cpp \
-src/platform/SDL2/keyboard.cpp \
-src/platform/SDL2/mouse.cpp \
+src/platform/SDL2/events.cpp \
+src/renderer/SDL2/renderer.cpp \
+src/renderer/SDL2/texture.cpp \
 \
 -o bin/tilegame \
 \

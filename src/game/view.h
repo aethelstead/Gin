@@ -6,26 +6,25 @@
 #include <string>
 
 #include "../platform/platform.h"
+#include "../renderer/renderer.h"
+#include "../renderer/texture.h"
 #include "world.h"
 #include "camera.h"
 #include "sprite.h"
 
 struct View
 {
-    static View* create(World* world, RenderContext* context);
+    static View* create(World* world, Renderer* renderer);
 
-    // @TODO: Should the view hold the renderContext?
-    RenderContext* context;
     World* world;
     std::vector<Sprite*> sprites;
-    std::map<std::string, Gin::Platform::Texture*> textures;
+    std::map<std::string, Texture*> textures;
 
     View():
-        context( nullptr ),
         world( nullptr )
     {}
 
-    void update();
+    void update(int frameCount);
 
 };
 
