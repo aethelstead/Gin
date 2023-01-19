@@ -80,6 +80,7 @@ bool Game::init(Config config)
     return true;
 }
 
+
 void Game::quit()
 {
     RenderContext::close(context);
